@@ -31,7 +31,6 @@ def pull_box_score(url):
     return df
   
 def return_stats_2(player_name,df,stat,line):
-  # return array of probabilities of going over and under the line, given input player, dataframe of game logs, statistic and the line
 
     # grab player name from url
     # import requests
@@ -60,14 +59,26 @@ def return_stats_2(player_name,df,stat,line):
     l10_over = sum(x.tail(10)>line) / len(x.tail(10))
     l15_over = sum(x.tail(15)>line) / len(x.tail(15))
     l20_over = sum(x.tail(20)>line) / len(x.tail(20))
+    l5_over_avg = sum(x.tail(5) - line) / len(x.tail(5))
+    l10_over_avg = sum(x.tail(10) - line) / len(x.tail(10))
+    l15_over_avg = sum(x.tail(15) - line) / len(x.tail(15))
+    l20_over_avg = sum(x.tail(20) - line) / len(x.tail(20))
+    overall_over_avg = sum(x - line) / len(x)
+
 
     overall_under = sum(x<line) / len(x)
     l5_under = sum(x.tail(5)<line) / len(x.tail(5))
     l10_under = sum(x.tail(10)<line) / len(x.tail(10))
     l15_under = sum(x.tail(15)<line) / len(x.tail(15))
     l20_under = sum(x.tail(20)<line) / len(x.tail(20))
+    l5_under_avg = sum(line - x.tail(5)) / len(x.tail(5))
+    l10_under_avg = sum(line - x.tail(10)) / len(x.tail(10))
+    l15_under_avg = sum(line - x.tail(15)) / len(x.tail(15))
+    l20_under_avg = sum(line - x.tail(20)) / len(x.tail(20))
+    overall_under_avg = sum(line - x) / len(x)
 
-    arr = [[player_name, pp_line, mu, overall_over, l5_over, l10_over, l15_over, l20_over, overall_under, l5_under, l10_under, l15_under, l20_under]]
+    arr = [[player_name, pp_line, mu, overall_over, l5_over, l10_over, l15_over, l20_over, overall_under, l5_under, l10_under, l15_under, l20_under,
+            l5_over_avg, l10_over_avg, l15_over_avg, l20_over_avg, overall_over_avg, l5_under_avg, l10_under_avg, l15_under_avg, l20_under_avg, overall_under_avg]]
 
 #     fig, ax = plt.subplots()
 
@@ -93,6 +104,7 @@ def return_stats_2(player_name,df,stat,line):
     # print('Last 20 Prob:' + str(sum(x.tail(20)>line) / len(x.tail(20))))
 
     return arr
+
 
 
 ### Examples (currently have to manually do all, need PrizePicks API and a better way to pull game logs, since Basketball Reference blocks your access if you pull too many too quickly ###
@@ -190,3 +202,25 @@ highest_overs = pp_df[pp_df['Over Score']>=0.68][['Player + Line','Over Score','
 
 highest_unders = pp_df[pp_df['Under Score']>=0.7][['Player + Line','Under Score','Overall % Under','L5 % Under','L10 % Under','L15 % Under','L20 % Under']].sort_values(by=['Under Score'], ascending=False)
 
+
+# Heatmaps to display best picks #
+import seaborn as sns
+
+vmin = 0
+vmax = 1
+
+data = pp_df[pp_df['Over Score']>=0.7][['Over Score', 'Over Amount Score']].sort_values(by=['Over Score', 'Over Amount Score'])
+  
+# plotting the heatmap
+hm = sns.heatmap(data=data, annot=True, cmap=sns.cubehelix_palette(as_cmap=True))
+
+
+import seaborn as sns
+
+vmin = 0
+vmax = 1
+
+data = pp_df[pp_df['Under Score']>=0.7][['Under Score', 'Under Amount Score']].sort_values(by=['Under Score', 'Under Amount Score'])
+  
+# plotting the heatmap
+hm = sns.heatmap(data=data, annot=True, cmap=sns.cubehelix_palette(as_cmap=True))
