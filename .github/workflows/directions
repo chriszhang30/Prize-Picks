@@ -1,0 +1,4 @@
+Step 1) Run scrape_prizepicks_projections.py to retrieve PrizePicks projections from their API
+Step 2) Run pull_game_logs.py to populate each PrizePicks player's season game logs from NBA API
+Step 3) Run calculate_scores.py to calculate probability and amount scores for each player in going over or under their PrizePicks projection
+Step 4) Run charts_and_scores.py to visualize potential best picks (check if there are injuries, since this could be play a factor in why a player's projection may be so high/low)
