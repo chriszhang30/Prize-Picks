@@ -28,7 +28,7 @@ new_df = pd.merge(nba_names, nba_proj,  how='inner', left_on=['id'], right_on = 
 new_df[['attributes.league', 'attributes.league_id', 'attributes.team', 'attributes.name', 'attributes.line_score', 'attributes.stat_type']]
 
 stat_map = {'Pts+Rebs+Asts':'PTS+REB+AST', 'Assists':'AST', 'Rebounds':'REB', 'Points':'PTS', 'Pts+Asts':'PTS+AST', 'Pts+Rebs':'PTS+REB', 
-            'Rebs+Asts':'REB+AST', '3-PT Made':'3P'}
+            'Rebs+Asts':'REB+AST', '3-PT Made':'3P', 'Free Throws Made':'FT', 'Fantasy Score':'FPTS'}
 
 new_df['game_stat'] = new_df['attributes.stat_type'].map(stat_map)
 new_df[['attributes.league', 'attributes.league_id', 'attributes.team', 'attributes.name', 'attributes.line_score', 'game_stat']]
