@@ -16,13 +16,22 @@ pp_players = new_df['attributes.name'].unique()
 
 #initialize empty lists that will put player id into
 player_ids = []
+
 for i in pp_players:
-    player_ids.append(players.find_players_by_full_name(i)[0]['id']) #this will error out if it finds a name that doesn't match
+    pl = players.find_players_by_full_name(i) # finds players that match name in NBA database
+    
+    if len(pl)>1: # if there is more than one match on name
+        for j in range(len(pl)):
+            if pl[j]['is_active']==True: # only add matches that are active players
+                player_ids.append(pl[j]['id']) #this will error out if it finds a name that doesn't match
+    else: # if there is just one match    
+        player_ids.append(pl[0]['id']) #this will error out if it finds a name that doesn't match
     
 # if this errors out, compare the output of follinwg two to find where the error is
 # dict(zip(pp_players, player_ids))
 # pp_players
 
+from time import sleep
 #pull game logs of each player
 game_logs =[]
 for i in player_ids:
