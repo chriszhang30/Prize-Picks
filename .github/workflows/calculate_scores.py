@@ -2,16 +2,18 @@
  import pandas as pd
   
 def pp_multi_stat(df):
-  # creates the prizepick multi-stat categories from game logs and renames some boxscore stat names to match with prizepick stat names
-  df['PTS+REB+AST'] = df['PTS']+df['REB']+df['AST']
-  df['PTS+REB'] = df['PTS']+df['REB']
-  df['PTS+AST'] = df['PTS']+df['AST']
-  df['REB+AST'] = df['REB']+df['AST']
-  df['BLK+STL'] = df['BLK']+df['STL']
-  df['FPTS'] = df['PTS']+1.2*df['REB']+1.5*df['AST']+3*df['BLK']+3*df['STL']-1*df['TOV']
-  df['3P'] = df['FG3M']
-  df['FT'] = df['FTM']
-  
+    # creates the prizepick multi-stat categories from game logs and renames some boxscore stat names to match with prizepick stat names
+    df['PTS+REB+AST'] = df['PTS']+df['REB']+df['AST']
+    df['PTS+REB'] = df['PTS']+df['REB']
+    df['PTS+AST'] = df['PTS']+df['AST']
+    df['REB+AST'] = df['REB']+df['AST']
+    df['BLK+STL'] = df['BLK']+df['STL']
+    df['FPTS'] = df['PTS']+1.2*df['REB']+1.5*df['AST']+3*df['BLK']+3*df['STL']-1*df['TOV']
+    df['3P'] = df['FG3M']
+    df['FT'] = df['FTM']
+
+    return df
+
 def return_stats(df,player_name,stat,line):
     # provide function the dataframe with players game logs, player name, and prizepicks projections (e.g. stat = PTS, line = 23.5)
     
@@ -70,6 +72,7 @@ pp_cols = ['Player', 'Line', 'Season Avg', 'Overall % Over', 'L5 % Over', 'L10 %
            'L20 Under Avg', 'Overall Under Avg', 'Over Score', 'Over Avg Score', 'Under Score', 'Under Avg Score']
 
 stats_df = pd.DataFrame(columns=pp_cols)
+pp = new_df.copy()
 
 # loop through all the players in the PrizePicks pull
 for player in pp_players:
@@ -78,9 +81,11 @@ for player in pp_players:
     
     # to take into account players traded during season to filter for only most recent team 
     most_recent_team = logs.head(1).MATCHUP.str.slice(start=0, stop=3, step=1)[0]
-    logs = logs[logs.MATCHUP.str.slice(start=0, stop=3, step=1)==most_recent_team
+    logs = logs[logs.MATCHUP.str.slice(start=0, stop=3, step=1)==most_recent_team]
     
     # loop through each PrizePick projection to calculate stats and scores
     for stat in lines:
         arr = return_stats(logs, player, stat, lines[stat][0])
         stats_df = pd.concat([stats_df, pd.DataFrame(arr, columns=pp_cols)], ignore_index=True) 
+       
+stats_df['Player + Line'] = stats_df['Player'] + ' ' + stats_df['Line']
